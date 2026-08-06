@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#0D9488"          # Teal accent — buttons, sliders, links
+backgroundColor = "#0F172A"       # Dark navy background
+secondaryBackgroundColor = "#1E293B"  # Slightly lighter navy for sidebar / cards
+textColor = "#F1F5F9"             # Soft white text
+font = "sans serif"
