@@ -249,30 +249,39 @@ with tab_predict:
 
         feature_names = bundle["feature_names"]
 
-        try:
-            sv = shap_vals[0] if shap_vals.ndim == 2 else shap_vals  # (n_features,)
-            fig_shap, ax_shap = plt.subplots(figsize=(8, 4))
-            fig_shap.patch.set_facecolor("#0F172A")
-            ax_shap.set_facecolor("#1E293B")
-
-            colors = ["#ef4444" if v > 0 else "#3b82f6" for v in sv]
-            y_pos = np.arange(len(feature_names))
-            bars = ax_shap.barh(y_pos, sv, color=colors, edgecolor="none", height=0.6)
-            ax_shap.set_yticks(y_pos)
-            ax_shap.set_yticklabels(feature_names, color="#F1F5F9", fontsize=10)
-            ax_shap.set_xlabel("SHAP value (impact on model output)", color="#94a3b8")
-            ax_shap.tick_params(colors="#94a3b8")
-            ax_shap.axvline(0, color="#475569", linewidth=1)
-            for spine in ax_shap.spines.values():
-                spine.set_edgecolor("#334155")
-            ax_shap.set_title(
-                "Per-feature SHAP contribution", color="#F1F5F9", fontsize=11
+        if shap_vals is None:
+            st.info(
+                "SHAP explanations are unavailable on this platform "
+                "(the SHAP C extension could not be loaded). "
+                "Prediction and risk gauge above are still fully accurate.",
+                icon="ℹ️",
             )
-            plt.tight_layout()
-            st.pyplot(fig_shap)
-            plt.close(fig_shap)
-        except Exception as e:
-            st.warning(f"SHAP plot unavailable: {e}")
+        else:
+            try:
+                sv = shap_vals[0] if shap_vals.ndim == 2 else shap_vals  # (n_features,)
+                fig_shap, ax_shap = plt.subplots(figsize=(8, 4))
+                fig_shap.patch.set_facecolor("#0F172A")
+                ax_shap.set_facecolor("#1E293B")
+
+                colors = ["#ef4444" if v > 0 else "#3b82f6" for v in sv]
+                y_pos = np.arange(len(feature_names))
+                ax_shap.barh(y_pos, sv, color=colors, edgecolor="none", height=0.6)
+                ax_shap.set_yticks(y_pos)
+                ax_shap.set_yticklabels(feature_names, color="#F1F5F9", fontsize=10)
+                ax_shap.set_xlabel("SHAP value (impact on model output)", color="#94a3b8")
+                ax_shap.tick_params(colors="#94a3b8")
+                ax_shap.axvline(0, color="#475569", linewidth=1)
+                for spine in ax_shap.spines.values():
+                    spine.set_edgecolor("#334155")
+                ax_shap.set_title(
+                    "Per-feature SHAP contribution", color="#F1F5F9", fontsize=11
+                )
+                plt.tight_layout()
+                st.pyplot(fig_shap)
+                plt.close(fig_shap)
+            except Exception as e:
+                st.warning(f"SHAP plot unavailable: {e}")
+
 
     else:
         st.info("Run `python src/train.py` to enable predictions.")
