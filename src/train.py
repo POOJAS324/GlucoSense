@@ -1,30 +1,3 @@
-"""
-src/train.py
-============
-Offline training script for GlucoSense.
-
-Run this script ONCE before launching the Streamlit app:
-
-    python src/train.py
-
-What it does
-------------
-1. Loads and cleans ``diabetes.csv`` (KNN imputation of impossible zeros).
-2. Applies ``StandardScaler`` to the features.
-3. Compares three classifiers with ``GridSearchCV`` (5-fold, ROC-AUC):
-   - LogisticRegression
-   - RandomForestClassifier
-   - XGBClassifier
-4. Selects the best model by cross-validated ROC-AUC.
-5. Evaluates the best model on a held-out 20 % test set and prints full
-   metrics (accuracy, precision, recall, F1, ROC-AUC, confusion matrix).
-6. Saves everything the Streamlit app needs to ``models/``:
-   - ``model.pkl``    — joblib bundle (model + imputer + scaler + explainer
-                        + pre-computed test-set SHAP values)
-   - ``metrics.json`` — test-set metrics, ROC curve data, model comparison
-
-Author : Pooja S (@POOJAS324)
-"""
 
 import json
 import os
@@ -74,11 +47,7 @@ RANDOM_STATE = 42
 
 
 def build_param_grids() -> list[tuple]:
-    """
-    Return a list of (name, estimator, param_grid) triples to search over.
-    The grids are kept intentionally small so training finishes quickly
-    on a laptop — this is a demo/portfolio project.
-    """
+    
     return [
         (
             "LogisticRegression",
@@ -111,12 +80,7 @@ def build_param_grids() -> list[tuple]:
 
 
 def get_shap_explainer(model, X_train_scaled: np.ndarray):
-    """
-    Return an appropriate SHAP explainer for the given model type.
-
-    - Tree-based models (RF, XGB) → ``TreeExplainer``
-    - Linear models (LR)           → ``LinearExplainer``
-    """
+    
     model_name = type(model).__name__
     if model_name in ("RandomForestClassifier", "XGBClassifier"):
         explainer = shap.TreeExplainer(model)

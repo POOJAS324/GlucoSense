@@ -1,13 +1,4 @@
-"""
-tests/test_data_preprocessing.py
-==================================
-Pytest unit tests for ``src/data_preprocessing.py``.
 
-Run with:
-    pytest tests/
-
-Author : Pooja S (@POOJAS324)
-"""
 
 import numpy as np
 import pandas as pd
@@ -31,10 +22,7 @@ from src.data_preprocessing import (
 
 @pytest.fixture
 def sample_df() -> pd.DataFrame:
-    """
-    A minimal 10-row synthetic DataFrame that mirrors the Pima dataset
-    structure, with deliberate zeros in the target columns.
-    """
+   
     np.random.seed(0)
     n = 10
     data = {
@@ -57,12 +45,10 @@ def sample_df() -> pd.DataFrame:
 
 
 class TestReplaceZerosWithNaN:
-    """Tests for :func:`replace_zeros_with_nan`."""
+    
 
     def test_zeros_replaced_in_target_columns(self, sample_df):
-        """
-        Zeros in ZERO_AS_NAN_COLS must become NaN after replacement.
-        """
+       
         result = replace_zeros_with_nan(sample_df)
         for col in ZERO_AS_NAN_COLS:
             original_zeros = (sample_df[col] == 0).sum()
@@ -73,9 +59,7 @@ class TestReplaceZerosWithNaN:
                 )
 
     def test_pregnancies_zeros_untouched(self, sample_df):
-        """
-        Zeros in ``Pregnancies`` must NOT be replaced (0 pregnancies is valid).
-        """
+      
         result = replace_zeros_with_nan(sample_df)
         # All positions that were 0 in Pregnancies should still be 0, not NaN
         preg_zeros_mask = sample_df["Pregnancies"] == 0
@@ -84,9 +68,7 @@ class TestReplaceZerosWithNaN:
         )
 
     def test_outcome_zeros_untouched(self, sample_df):
-        """
-        Zeros in ``Outcome`` must NOT be replaced (0 = healthy, a valid label).
-        """
+        
         result = replace_zeros_with_nan(sample_df)
         outcome_zeros_mask = sample_df["Outcome"] == 0
         assert not result.loc[outcome_zeros_mask, "Outcome"].isna().any(), (
@@ -94,21 +76,17 @@ class TestReplaceZerosWithNaN:
         )
 
     def test_original_df_not_mutated(self, sample_df):
-        """
-        :func:`replace_zeros_with_nan` must return a copy, not mutate the input.
-        """
+        
         original_glucose = sample_df["Glucose"].copy()
         replace_zeros_with_nan(sample_df)
         pd.testing.assert_series_equal(sample_df["Glucose"], original_glucose)
 
 
 class TestCleanAndImpute:
-    """Tests for :func:`clean_and_impute`."""
+   
 
     def test_no_nans_after_imputation(self, sample_df):
-        """
-        The cleaned DataFrame must contain zero NaN values in feature columns.
-        """
+       
         cleaned_df, _ = clean_and_impute(sample_df)
         nan_count = cleaned_df[FEATURE_COLS].isna().sum().sum()
         assert nan_count == 0, (
@@ -116,27 +94,21 @@ class TestCleanAndImpute:
         )
 
     def test_row_count_preserved(self, sample_df):
-        """
-        The output must have the same number of rows as the input.
-        """
+        
         cleaned_df, _ = clean_and_impute(sample_df)
         assert len(cleaned_df) == len(sample_df), (
             f"Row count changed: input={len(sample_df)}, output={len(cleaned_df)}"
         )
 
     def test_column_set_preserved(self, sample_df):
-        """
-        The output must contain exactly the same columns as the input.
-        """
+       
         cleaned_df, _ = clean_and_impute(sample_df)
         assert set(cleaned_df.columns) == set(sample_df.columns), (
             f"Column mismatch: {set(cleaned_df.columns)} != {set(sample_df.columns)}"
         )
 
     def test_imputer_returned(self, sample_df):
-        """
-        :func:`clean_and_impute` must return a fitted KNNImputer object.
-        """
+       
         from sklearn.impute import KNNImputer
         _, imputer = clean_and_impute(sample_df)
         assert isinstance(imputer, KNNImputer), (
@@ -144,10 +116,7 @@ class TestCleanAndImpute:
         )
 
     def test_pre_fitted_imputer_accepted(self, sample_df):
-        """
-        Passing a pre-fitted imputer must not raise and must still produce
-        a NaN-free result (simulates inference / prediction-time usage).
-        """
+       
         _, fitted_imputer = clean_and_impute(sample_df)
         cleaned_df2, _ = clean_and_impute(sample_df, imputer=fitted_imputer)
         assert cleaned_df2[FEATURE_COLS].isna().sum().sum() == 0

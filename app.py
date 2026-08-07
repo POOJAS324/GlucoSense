@@ -520,26 +520,8 @@ suitable as a portfolio or interview reference project.
 
 ---
 
-### 📂 Project Structure
 
-```
-GlucoSense/
-├── src/
-│   ├── data_preprocessing.py   # data loading + KNN imputation
-│   ├── train.py                # offline model training script
-│   └── predict.py              # inference helpers
-├── tests/
-│   └── test_data_preprocessing.py
-├── models/
-│   ├── model.pkl               # trained model bundle (joblib)
-│   └── metrics.json            # test-set metrics & model comparison
-├── app.py                      # Streamlit UI (this file)
-├── diabetes.csv
-├── requirements.txt
-└── Dockerfile
-```
 
----
 
 ### 👩‍💻 Author
 **Pooja S** — [@POOJAS324](https://github.com/POOJAS324)
