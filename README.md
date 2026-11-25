@@ -2,7 +2,7 @@
 
 An AI-powered web application that predicts diabetes risk using machine learning based on key health parameters. The application provides diabetes risk probability, explains predictions using SHAP, and compares multiple ML models to improve transparency.
 
-[Live Demo](https://your-app-name.streamlit.app) · [Report Bug](https://github.com/POOJAS324/GlucoSense/issues) · [Request Feature](https://github.com/POOJAS324/GlucoSense/issues)
+[Live Demo](https://glucosense-app.streamlit.app) · [Report Bug](https://github.com/POOJAS324/GlucoSense/issues) · [Request Feature](https://github.com/POOJAS324/GlucoSense/issues)
 
 ---
 
